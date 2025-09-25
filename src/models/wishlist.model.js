@@ -1,18 +1,26 @@
 import { Schema, model } from "mongoose";
-const wishlist = new Schema(
+
+const wishlistSchema = new Schema(
     {
         wishBy: {
-            type: String,
+            type: Schema.Types.ObjectId,
+            ref: "User",
             required: true,
         },
-
         book: [
             {
+                bookId: {
+                    type: Schema.Types.ObjectId,
+                    ref: "Book",
+                    required: true,
+                },
+                image: String,
                 authorname: String,
-                bookname: String
-            }]
-    }
+                bookname: String,
+            },
+        ],
+    },
+    { timestamps: true }
+);
 
-)
-
-export default model('Wish', wishlist);
+export default model("Wish", wishlistSchema);
