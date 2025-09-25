@@ -1,10 +1,10 @@
-import { getWishbyUserID, addBookToWishlist, removeBookFromWishlist } from '../services/wishlist.service';
+import { getWishByUserID, addBookToWishlist, removeBookFromWishlist } from '../services/wishlist.service';
 import HttpStatus from 'http-status-codes';
 
 export const getUserWish = async (req, res, next) => {
     try {
-        const userId = req.user.id;
-        const wish = await getWishbyUserID(userId);
+        const userId = req.body.userId;
+        const wish = await getWishByUserID(userId);
         res.status(HttpStatus.OK).json({ message: 'Wishlist rerieved', wishlist: wish });
     }
     catch (error) {
@@ -16,7 +16,7 @@ export const getUserWish = async (req, res, next) => {
 export const addBookToUserWish = async (req, res, next) => {
     try {
         const userId = req.body.userId;
-        const bookId = req.params;
+        const bookId = req.params._id;
 
         console.log('Authenticated User ID:', userId);
         console.log('Book ID to add:', bookId);
@@ -32,17 +32,26 @@ export const addBookToUserWish = async (req, res, next) => {
 
 export const removeBookFromUserWish = async (req, res, next) => {
     try {
+        // Get authenticated user id from JWT
         const userId = req.body.userId;
-        const bookId = req.params;
 
-        console.log('Authenticated User ID:', userId);
-        console.log('Book ID to remove:', bookId);
+        // Get book id from URL params
+        const bookId = req.params._id;
 
+        // Call service to remove book
         const updatedWish = await removeBookFromWishlist(userId, bookId);
 
-        res.status(HttpStatus.OK).json({ message: 'Book removed from wishlist', wish: updatedWish });
+        res.status(HttpStatus.OK).json({
+            code: HttpStatus.OK,
+            message: updatedWish.message,
+            wishlist: updatedWish.wishlist,
+        });
     } catch (error) {
-        console.error('Error removing book from cart:', error);
-        next(error);
+        console.error("Error removing book from wishlist:", error);
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            code: HttpStatus.INTERNAL_SERVER_ERROR,
+            message: error.message,
+            wishlist: null,
+        });
     }
 };
