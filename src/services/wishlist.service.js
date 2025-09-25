@@ -1,18 +1,17 @@
-import Wish from '../models/wishlist.model'
-import Book from '../models/books.model';
+import Wish from "../models/wishlist.model.js";
+import Book from "../models/books.model.js";
 
-export const getWishbyUserID = async (userID) => {
+
+export const getWishByUserID = async (userID) => {
     return await Wish.findOne({ wishBy: userID });
 };
 
+
 export const addBookToWishlist = async (userID, bookID) => {
     const book = await Book.findById(bookID);
-    if (!book) {
-        throw new Error("Book not found in database");
-    }
+    if (!book) throw new Error("Book not found in database");
 
-    let wish = await getWishbyUserID(userID);
-
+    let wish = await getWishByUserID(userID);
     if (!wish) {
         wish = new Wish({
             wishBy: userID,
@@ -20,45 +19,37 @@ export const addBookToWishlist = async (userID, bookID) => {
         });
     }
 
-    const existingBook = wish.book.find(b => b._id.equals(book._id)); // Use mongoose comparison
-
+    const existingBook = wish.book.find((b) => b.bookId.equals(book._id));
     if (existingBook) {
-        return { message: "Book already in wishlist" };
+        return { message: "Book already in wishlist", wishlist: wish };
     }
 
     wish.book.push({
-        _id: book._id,
+        bookId: book._id,
         bookname: book.bookName,
-        authorname: book.authorname
+        authorname: book.author,
+        image: book.image || ""
     });
 
     await wish.save();
     return { message: "Book added to wishlist", wishlist: wish };
 };
 
+
 export const removeBookFromWishlist = async (userID, bookID) => {
-    const book = await Book.findById(bookID);
-    if (!book) {
-        throw new Error("Book not found in database");
-    }
+    const wish = await Wish.findOne({ wishBy: userID });
+    if (!wish) throw new Error("Wishlist not found");
 
-    let wish = await getWishbyUserID(userID);
-
-    if (!wish) {
-        throw new Error("Wishlist not found");
-    }
-
-    const existingBook = wish.book.find(b => b._id.equals(book._id)); // Use mongoose comparison
-
+    const existingBook = wish.book.find((b) => b.bookId.equals(bookID));
     if (!existingBook) {
-        return { message: "Book not found in wishlist" };
+        return { message: "Book not found in wishlist", wishlist: wish };
     }
 
-    wish.book = wish.book.filter(b => !b._id.equals(book._id)); // Remove the book
+    wish.book = wish.book.filter((b) => !b.bookId.equals(bookID));
 
     if (wish.book.length === 0) {
-        await Wish.deleteOne({ _id: wish._id }); // Delete the wishlist if empty
-        return { message: "Wishlist is now empty and has been removed." };
+        await Wish.deleteOne({ _id: wish._id });
+        return { message: "Book removed. Wishlist is now empty.", wishlist: null };
     }
 
     await wish.save();
