@@ -4,14 +4,11 @@ const router = express.Router();
 import userRoute from './user.route';
 
 
-
+import cartRoute from './cart.route'
 import bookRoute from './book.route';
 import wishlistRoute from './wishlist.route'
-/**
- * Function contains Application routes
- *
- * @returns router
- */
+import orderRoute from '../routes/order.route'
+
 const routes = () => {
   router.get('/', (req, res) => {
     res.json('Welcome');
@@ -19,8 +16,11 @@ const routes = () => {
   router.use('/users', userRoute);
 
   router.use('/books', bookRoute);
+  router.use('/books/cart', cartRoute)
 
-  router.use('/books/wishlist', wishlistRoute)
+  router.use('/books/wishlist', wishlistRoute);
+  router.use('/order', orderRoute);
+
   return router;
 };
 
