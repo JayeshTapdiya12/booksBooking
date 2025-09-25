@@ -6,7 +6,7 @@ dotenv.config();
 
 const router = express.Router();
 
-router.post('/get/:_id', userAuth(process.env.hidden_key), wishController.getUserWish);
+router.get('/get', userAuth(process.env.hidden_key), wishController.getUserWish);
 router.post('/add/:_id', userAuth(process.env.hidden_key), wishController.addBookToUserWish);
 router.post('/remove/:_id', userAuth(process.env.hidden_key), wishController.removeBookFromUserWish);
 
