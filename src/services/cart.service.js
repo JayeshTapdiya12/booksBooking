@@ -32,6 +32,7 @@ export const addBook = async (bookID, body) => {
             author: book.author,
             quantity: 1,
             price: book.price,
+            _id: book._id,
         });
     }
 
