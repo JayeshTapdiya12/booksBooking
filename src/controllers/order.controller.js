@@ -1,7 +1,6 @@
 import * as orderService from '../services/order.service.js';
 import HttpStatus from 'http-status-codes';
 
-// ✅ Get all orders for a user
 export const getAllOrder = async (req, res, next) => {
     try {
         const userId = req.body.userId;
@@ -17,7 +16,6 @@ export const getAllOrder = async (req, res, next) => {
     }
 };
 
-// ✅ Place a new order (from cart)
 export const addOrder = async (req, res, next) => {
     try {
         const userId = req.body.userId;

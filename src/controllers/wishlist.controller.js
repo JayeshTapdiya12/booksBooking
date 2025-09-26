@@ -32,13 +32,10 @@ export const addBookToUserWish = async (req, res, next) => {
 
 export const removeBookFromUserWish = async (req, res, next) => {
     try {
-        // Get authenticated user id from JWT
         const userId = req.body.userId;
 
-        // Get book id from URL params
         const bookId = req.params._id;
 
-        // Call service to remove book
         const updatedWish = await removeBookFromWishlist(userId, bookId);
 
         res.status(HttpStatus.OK).json({

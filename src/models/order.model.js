@@ -5,7 +5,7 @@ const orderSchema = new Schema(
         orderBy: {
             type: Schema.Types.ObjectId,
             ref: "User",
-            required: true, // user who placed the order
+            required: true,
         },
         books: [
             {
@@ -20,9 +20,9 @@ const orderSchema = new Schema(
                     type: Number,
                     default: 1,
                 },
-                price: Number, // price per unit
+                price: Number,
                 discountPrice: Number,
-                totalPrice: Number, // quantity * price or discounted price
+                totalPrice: Number,
             },
         ],
         orderTotal: {
@@ -31,7 +31,7 @@ const orderSchema = new Schema(
         },
         orderId: {
             type: String,
-            default: () => require("uuid").v4(), // generate unique UUID
+            default: () => require("uuid").v4(),
             unique: true,
         },
         isPaid: {
